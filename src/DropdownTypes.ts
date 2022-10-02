@@ -9,10 +9,8 @@ export type DropdownOptionObject =
       render: RenderFunction;
     };
 
-type DropdownButton = DropdownOptionObject;
-
 export interface DropdownProp {
-  button: DropdownButton;
+  button: DropdownOptionObject;
   options: DropdownOptionObject[];
   onMenuClick?: (isMenuOpen: boolean) => void;
   onOptionClick?: (key: string) => void;

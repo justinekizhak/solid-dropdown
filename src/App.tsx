@@ -55,9 +55,11 @@ const App = (props: DropdownProp) => {
 
   const handleOutsideClick = () => {
     if (isMenuOpen()) {
-      console.log("handleOutsideClick");
       setIsMenuOpen(false);
       menuClose();
+      if (props.onMenuClick) {
+        props.onMenuClick(false);
+      }
     }
   };
 
