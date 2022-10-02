@@ -1,10 +1,12 @@
-import { createSignal, For, Show } from "solid-js";
+import { createSignal, For, onMount } from "solid-js";
 import { DropdownOptionObject, DropdownProp } from "./DropdownTypes";
 import { useOutsideClick } from "./hooks/useOutsideCilck";
+import anime from "animejs";
 
 const App = (props: DropdownProp) => {
   let optionsEl: HTMLDivElement | undefined;
   let buttonEl: HTMLButtonElement | undefined;
+  let optionsContainerEl: HTMLDivElement | undefined;
 
   const [isMenuOpen, setIsMenuOpen] = createSignal(false);
   const [selectedOption, setSelectedOption] = createSignal("");
@@ -32,6 +34,7 @@ const App = (props: DropdownProp) => {
     const selectedOptionKey = getKey(option);
     setSelectedOption(selectedOptionKey);
     setIsMenuOpen(false);
+    menuClose();
     if (props.onOptionClick) {
       props.onOptionClick(selectedOptionKey);
     }
@@ -40,6 +43,11 @@ const App = (props: DropdownProp) => {
   const handleMenuClick = () => {
     const newValue = !isMenuOpen();
     setIsMenuOpen(newValue);
+    if (newValue) {
+      menuOpen();
+    } else {
+      menuClose();
+    }
     if (props.onMenuClick) {
       props.onMenuClick(newValue);
     }
@@ -49,6 +57,7 @@ const App = (props: DropdownProp) => {
     if (isMenuOpen()) {
       console.log("handleOutsideClick");
       setIsMenuOpen(false);
+      menuClose();
     }
   };
 
@@ -57,6 +66,37 @@ const App = (props: DropdownProp) => {
     handleOutsideClick,
     () => [buttonEl]
   );
+
+  const menuOpen = () => {
+    anime({
+      targets: [optionsContainerEl],
+      scaleY: [0, 1],
+      scaleX: [0, 1],
+      easing: "easeOutSine",
+      duration: 300,
+    });
+  };
+
+  const menuClose = () => {
+    anime({
+      targets: [optionsContainerEl],
+      scaleY: [1, 0],
+      scaleX: [1, 0],
+      easing: "easeInSine",
+      duration: 300,
+    });
+  };
+
+  const menuInitialState = () => {
+    anime.set(optionsContainerEl || null, {
+      scaleY: 0,
+      scaleX: 0,
+    });
+  };
+
+  onMount(() => {
+    menuInitialState();
+  });
 
   return (
     <div class="m-4">
@@ -68,29 +108,27 @@ const App = (props: DropdownProp) => {
       >
         {getLabel(props.button)()}
       </button>
-      <Show when={isMenuOpen()}>
-        <div>
-          <div
-            class="inline-flex flex-col items-start bg-gray-100 mt-2 shadow"
-            ref={optionsEl}
-          >
-            <For each={props.options}>
-              {(option: DropdownOptionObject) => (
-                <button
-                  type="button"
-                  onClick={() => handleOptionClick(option)}
-                  class="py-2 px-6 hover:bg-green-100"
-                  classList={{
-                    "bg-green-300": getKey(option) === selectedOption(),
-                  }}
-                >
-                  {getLabel(option)}
-                </button>
-              )}
-            </For>
-          </div>
+      <div ref={optionsContainerEl} class="origin-top-left w-30">
+        <div
+          class="inline-flex flex-col items-start bg-gray-100 mt-2 shadow"
+          ref={optionsEl}
+        >
+          <For each={props.options}>
+            {(option: DropdownOptionObject) => (
+              <button
+                type="button"
+                onClick={() => handleOptionClick(option)}
+                class="py-2 px-6 hover:bg-green-100"
+                classList={{
+                  "bg-green-300": getKey(option) === selectedOption(),
+                }}
+              >
+                {getLabel(option)}
+              </button>
+            )}
+          </For>
         </div>
-      </Show>
+      </div>
     </div>
   );
 };
