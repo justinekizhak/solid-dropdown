@@ -33,7 +33,11 @@ const ContainerApp = () => {
         );
       },
     },
-    options: ["option 1", "option 2", "option 3"],
+    options: [
+      "option 1",
+      "option 2",
+      "option 3 long option. long option. long option. long option.",
+    ],
     onMenuClick: (isMenuOpen) => {
       setIsMenuOpen(isMenuOpen);
     },
