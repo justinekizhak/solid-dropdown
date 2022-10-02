@@ -101,7 +101,7 @@ const App = (props: DropdownProp) => {
   });
 
   return (
-    <div class="m-4">
+    <div class="">
       <button
         ref={buttonEl}
         type="button"
@@ -112,7 +112,7 @@ const App = (props: DropdownProp) => {
       </button>
       <div ref={optionsContainerEl} class="origin-top-left md:w-1/2">
         <div
-          class="inline-flex flex-col items-start bg-gray-100 mt-2 shadow"
+          class="inline-flex flex-col items-start bg-gray-100 mt-2 shadow absolute"
           ref={optionsEl}
         >
           <For each={props.options}>

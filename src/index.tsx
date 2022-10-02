@@ -4,11 +4,12 @@ import { render } from "solid-js/web";
 
 import "virtual:windi-devtools";
 import "virtual:windi.css";
-import App from "./App";
+import Dropdown from "./App";
 import { DropdownProp } from "./DropdownTypes";
 
 const ContainerApp = () => {
   const [isMenuOpen, setIsMenuOpen] = createSignal(false);
+  const [selectedOption, setSelectedOption] = createSignal("");
 
   const dropdownProps: DropdownProp = {
     button: {
@@ -42,12 +43,19 @@ const ContainerApp = () => {
       setIsMenuOpen(isMenuOpen);
     },
     onOptionClick: (optionKey) => {
-      console.log("option selected: ", optionKey);
+      setSelectedOption(optionKey);
       setIsMenuOpen(false);
     },
   };
 
-  return <App {...dropdownProps} />;
+  return (
+    <div class="m-4">
+      <Dropdown {...dropdownProps} />
+      <div class="my-4">
+        <div>Selected option: {selectedOption()}</div>
+      </div>
+    </div>
+  );
 };
 
 render(() => <ContainerApp />, document.getElementById("root") as HTMLElement);
